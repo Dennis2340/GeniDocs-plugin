@@ -28,11 +28,18 @@ export async function sendToDocumentationServer(data) {
     const payload = {
       owner: data.owner,
       repo: data.repo,
+      // Include branch information if available
+      ...(data.branch && { branch: data.branch }),
+      // Include PR number if available
+      ...(data.prNumber && { prNumber: data.prNumber }),
       // Include additional data needed by the API
       files: documentableFiles.map(file => ({
         path: file.path,
         content: file.content || '',
-        changeType: file.changeType
+        changeType: file.changeType,
+        ...(file.additions && { additions: file.additions }),
+        ...(file.deletions && { deletions: file.deletions }),
+        ...(file.changes && { changes: file.changes })
       }))
     };
 
